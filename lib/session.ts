@@ -12,15 +12,21 @@ type PayLoad = {
 export const createSession = async (userId: string) => {
     const expiresAt = new Date(Date.now() + 7*24*60*60*1000);
     const payload = { userId, expiresAt };
-
+    console.log('I am in create session');
     const session = await encrypt(payload);
 
-    const cook = await cookies()
-    cook.set("session", session, {
+    const cookie = await cookies()
+    cookie.set("session", session, {
         httpOnly: true,
         expires: expiresAt,
         secure: true
     })
+    console.log(cookie);
+}
+
+export const deleteSession = async () => {
+    const cookie = await cookies()
+    cookie.delete("session")
 }
 
 const encrypt = async (payload: PayLoad) => {
