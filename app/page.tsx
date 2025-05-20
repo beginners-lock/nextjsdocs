@@ -1,5 +1,7 @@
 //import Image from "next/image";
 
+import Link from "next/link";
+
 //import { notFound } from "next/navigation";
 
 export default async function Home() {
@@ -13,8 +15,12 @@ export default async function Home() {
   //throw new Error('This is a simulated error fam.')
 
   return (
-    <div >
+    <div className="flex flex-col">
       Home
+
+      <Link href={'/dashboard'} className="text-blue-700 underline">
+        Go to dashboard
+      </Link>
     </div>
   );
 }
