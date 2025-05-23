@@ -1,9 +1,8 @@
-import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "./lib/session";
 
-const publicRoutes = ["/login"];
-const protectedRoutes = ["/user"];
+const publicRoutes = ['/login']
+const privateRoutes = ['/user']
 
 //Filters out Next.js internal assets
 export const config = {
@@ -11,21 +10,21 @@ export const config = {
 };
 
 export default async function middleware(req: NextRequest){
-    //console.log('>>middlewaare');
     const destination = req.nextUrl.pathname;
-    const cookie = await cookies();
-
-    const session = cookie.get("session")?.value;
-    const userId = await decrypt(session)
     
-    if(publicRoutes.includes(destination) && userId){
-        return NextResponse.redirect(new URL('/user', req.nextUrl));
+    const session = req.cookies.get("session")?.value;
+
+    if(publicRoutes.includes(destination) && session){
+        const payload = await decrypt(session);
+
+        if(payload.userId){
+           return NextResponse.redirect(new URL('/user', req.nextUrl)) 
+        }
+    }
+    
+    if(privateRoutes.includes(destination) && !session){
+        return NextResponse.redirect(new URL('/login', req.nextUrl))
     }
 
-    if(protectedRoutes.includes(destination) && !userId){
-        console.log('protected>>'+userId);
-        return NextResponse.redirect(new URL('/login', req.nextUrl));
-    }
-
-    return NextResponse.next();
+    return NextResponse.next()
 }

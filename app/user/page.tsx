@@ -1,6 +1,6 @@
 "use client"
 
-import { logout } from "@/lib/actions"
+import { logout } from "@/lib/actions";
 import { useActionState } from "react"
 import { useFormStatus } from "react-dom";
 
@@ -9,9 +9,9 @@ export default function UserPage(){
     const [state, logoutAction] = useActionState(logout, undefined);
 
     return(
-        <div className="w-full text-black">
-            <form action={logoutAction}>     
-            <LogoutButton/>
+        <div className="text-black w-full h-full">
+            <form action={logoutAction} className="flex flex-col items-start justify-start">
+                <LogoutButton/>
             </form>
         </div>
     )
@@ -21,8 +21,9 @@ function LogoutButton(){
     const { pending } = useFormStatus();
 
     return(
-        <button className="border border-black px-2 py-1">
-            { pending ? 'Logging out' : 'Logout' }
+        <button type="submit" className="px-2 py-1 border border-black bg-black text-white">
+            {pending ? 'Logging out...' : 'Logout'}
         </button>
     )
 }
+
